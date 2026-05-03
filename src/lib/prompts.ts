@@ -208,18 +208,21 @@ export function metadataPrompt(scriptText: string, idea: string): string {
 
 export function coverArtPrompt(accent: string, episodeTitle: string): string {
   return [
-    `Quiet, slightly unsettling podcast cover art. Two abstract figures in conversation, dark background, single warm light source between them.`,
-    `Painterly, restrained, editorial — not glossy or generic. Square 1:1 composition.`,
-    `Episode mood: ${accent}.`,
-    `No text, no logos, no faces, no human anatomy detail. Suggestion of presence rather than depiction.`,
+    `Bright minimal podcast episode cover art in the "After Them" visual identity.`,
+    `Sunlit white studio space, soft natural daylight from the side casting gentle diagonal shadows on a pale wall.`,
+    `Foreground: a single matte black studio condenser microphone on a stand, with a small glowing red recording-light dot. Optionally a pair of black over-ear headphones resting on the white desk surface.`,
+    `Photographic realism, slightly clinical, contemplative. Editorial quality.`,
+    `Episode mood / variation: ${accent}. Reflect the mood subtly through props, lighting angle, or a small additional object — never through colour saturation. Stay restrained.`,
+    `Square 1:1. No text. No logos. No people. No words anywhere in the image. The only saturated colour is the small red recording-light dot.`,
     `Episode title for context only (do not render): "${episodeTitle}".`,
   ].join(" ");
 }
 
 export const SHOW_COVER_PROMPT = [
-  `Podcast cover art for a show called "After Them".`,
-  `Quiet, slightly unsettling, editorial. Two abstract minimal figures sitting in conversation, dark near-black background, single warm amber light source between them.`,
-  `Painterly, restrained — feels like an oil sketch, not a render. Patient and intimate composition. The figures are a suggestion, not a depiction — no faces, no anatomical detail, no human features visible.`,
-  `Square 1:1 composition. Centred. Plenty of darkness around the figures. The warm light is the only colour against the dark.`,
-  `No text. No logos. No words anywhere in the image. No glow, no glossy effects, no neon. The mood is contemplative, slightly haunted, warm where the light reaches.`,
+  `Podcast cover art for a show called "After Them" — bright, minimal, photographic.`,
+  `Sunlit white studio space, soft natural daylight from the upper-left casting clean diagonal shadows on a pale wall.`,
+  `Centre: a single matte black studio condenser microphone on a stand, with one small glowing red recording-light dot. Foreground: a pair of black over-ear headphones resting on a clean white desk surface. Background: an empty modern office chair softly out of focus.`,
+  `Photographic realism, editorial, slightly clinical, contemplative — the room feels just-vacated.`,
+  `Square 1:1, plenty of negative space in the upper third for the show title to be added in post.`,
+  `No text. No logos. No people. The only saturated colour anywhere is the small red recording-light dot.`,
 ].join(" ");

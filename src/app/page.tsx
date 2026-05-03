@@ -45,7 +45,9 @@ export default async function Home() {
 
       <section>
         <div className="flex items-baseline justify-between mb-6">
-          <h2 className="serif text-2xl">Episodes</h2>
+          <h2 className="text-xs uppercase tracking-[0.25em] text-[var(--muted)]">
+            Episodes
+          </h2>
           <Link
             href="/new"
             className="text-sm text-[var(--accent)] hover:underline underline-offset-4"
@@ -55,12 +57,12 @@ export default async function Home() {
         </div>
 
         {episodes.length === 0 ? (
-          <div className="border border-[var(--border)] rounded-lg p-10 text-center text-[var(--muted)]">
+          <div className="border border-[var(--border)] bg-white rounded-lg p-10 text-center text-[var(--muted)]">
             No episodes yet. Start with a question that scares you slightly.
             <div className="mt-4">
               <Link
                 href="/new"
-                className="inline-block bg-[var(--accent)] text-black px-4 py-2 rounded-full text-sm font-medium hover:opacity-90"
+                className="inline-block bg-[var(--foreground)] text-[var(--background)] px-4 py-2 rounded-full text-sm font-medium hover:opacity-90"
               >
                 Write episode 1
               </Link>
@@ -72,7 +74,7 @@ export default async function Home() {
               <li key={ep.id}>
                 <Link
                   href={`/episodes/${ep.id}`}
-                  className="flex gap-5 items-start border border-[var(--border)] hover:border-[var(--muted)] rounded-lg p-4 transition-colors"
+                  className="flex gap-5 items-start bg-white border border-[var(--border)] hover:border-[var(--foreground)]/30 rounded-lg p-4 transition-colors"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -82,10 +84,10 @@ export default async function Home() {
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                      Episode {ep.number} · {fmtDuration(ep.durationSeconds)} ·{" "}
+                      Ep {ep.number} · {fmtDuration(ep.durationSeconds)} ·{" "}
                       {ep.guestName}
                     </p>
-                    <h3 className="serif text-2xl mt-1 leading-tight">
+                    <h3 className="serif text-2xl mt-1 leading-tight text-[var(--foreground)]">
                       {ep.title}
                     </h3>
                     <p className="text-sm text-[var(--muted)] mt-2 line-clamp-2">

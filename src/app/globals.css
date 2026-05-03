@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #f4f1ea;
-  --muted: #8a8378;
-  --accent: #e8a948;
-  --border: #1f1d1a;
-  --surface: #131210;
+  /* Theme matches the show cover: sunlit white studio space, near-black
+     text, single red accent (the REC light). */
+  --background: #f5f4f1;
+  --foreground: #0a0a0a;
+  --muted: #6b6b6b;
+  --accent: #d92e1e;
+  --border: #e3e1dd;
+  --surface: #ebe9e5;
 }
 
 @theme inline {
@@ -34,8 +36,27 @@ body {
   font-feature-settings: "lnum", "kern";
 }
 
+/* Show-title display face — thin geometric caps with extra letter spacing,
+   matching the cover artwork. */
+.display {
+  font-family: var(--font-geist-sans);
+  font-weight: 200;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
 .glow {
-  box-shadow: 0 0 80px -20px rgba(232, 169, 72, 0.35);
+  box-shadow: 0 1px 60px -10px rgba(0, 0, 0, 0.18);
+}
+
+/* Tiny REC indicator used as a recurring brand mark across the site. */
+.rec-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(217, 46, 30, 0.5);
 }
 
 .scrollbar-thin {

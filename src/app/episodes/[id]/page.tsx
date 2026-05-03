@@ -44,7 +44,7 @@ export default async function EpisodePage({
           <img
             src={ep.coverUrl}
             alt={`Cover art for ${ep.title}`}
-            className="w-full aspect-square rounded-lg object-cover bg-[var(--surface)] glow"
+            className="w-full aspect-square rounded-lg object-cover bg-white glow border border-[var(--border)]"
           />
         </div>
         <div>

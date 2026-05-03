@@ -28,11 +28,12 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
         <header className="border-b border-[var(--border)]">
           <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
-            <Link href="/" className="flex items-baseline gap-3 group">
-              <span className="serif text-2xl tracking-tight text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
+            <Link href="/" className="flex items-center gap-3 group">
+              <span className="rec-dot" aria-hidden />
+              <span className="display text-base text-[var(--foreground)]">
                 After Them
               </span>
-              <span className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+              <span className="text-[10px] uppercase tracking-[0.25em] text-[var(--muted)] hidden sm:inline">
                 Studio
               </span>
             </Link>
@@ -45,7 +46,7 @@ export default function RootLayout({
               </Link>
               <Link
                 href="/new"
-                className="bg-[var(--accent)] text-black px-3 py-1.5 rounded-full text-sm font-medium hover:opacity-90"
+                className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1.5 rounded-full text-sm font-medium hover:opacity-90"
               >
                 New episode
               </Link>
