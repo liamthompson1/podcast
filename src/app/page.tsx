@@ -3,6 +3,7 @@ import { list } from "@vercel/blob";
 import { listEpisodes } from "@/lib/storage";
 import { getHostVoice } from "@/lib/host-config";
 import { RegenerateCoverButton } from "./regenerate-cover-button";
+import { DeleteEpisodeButton } from "./delete-episode-button";
 
 export const dynamic = "force-dynamic";
 
@@ -138,6 +139,12 @@ export default async function Home() {
                     </Link>
                     <span className="text-[var(--border)]">·</span>
                     <RegenerateCoverButton id={ep.id} />
+                    <span className="text-[var(--border)]">·</span>
+                    <DeleteEpisodeButton
+                      id={ep.id}
+                      title={ep.title}
+                      number={ep.number}
+                    />
                   </div>
                 </div>
               </li>
