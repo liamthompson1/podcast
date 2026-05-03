@@ -34,6 +34,11 @@ export interface PublishedEpisode {
   title: string;
   description: string;
   showNotes: string;
+  // Original inputs — kept on the manifest so /edit can regenerate from
+  // scratch under whatever the current prompt rules are. Optional for
+  // backwards-compat with episodes published before this was added.
+  idea?: string;
+  guestPersona?: string;
   guestName: string;
   guestVoiceId: string;
   guestVoiceName: string;

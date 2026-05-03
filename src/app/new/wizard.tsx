@@ -119,6 +119,7 @@ export function Wizard({
           id,
           idea: state.idea,
           guestName: state.guestName,
+          guestPersona: state.guestPersona,
           guestVoiceId: state.guestVoiceId,
           guestVoiceName: state.guestVoiceName,
           script: state.script,

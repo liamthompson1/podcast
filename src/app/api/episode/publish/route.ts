@@ -28,6 +28,7 @@ interface PublishRequest {
   id: string; // client-generated uuid
   idea: string;
   guestName: string;
+  guestPersona?: string;
   guestVoiceId: string;
   guestVoiceName: string;
   script: ScriptTurn[];
@@ -186,6 +187,8 @@ export async function POST(req: NextRequest) {
       title: metadata.title,
       description: metadata.description,
       showNotes: metadata.showNotes,
+      idea: body.idea,
+      guestPersona: body.guestPersona ?? prior?.guestPersona,
       guestName: body.guestName,
       guestVoiceId: body.guestVoiceId,
       guestVoiceName: body.guestVoiceName,
