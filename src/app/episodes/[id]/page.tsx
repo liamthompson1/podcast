@@ -23,12 +23,20 @@ export default async function EpisodePage({
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
-      <Link
-        href="/"
-        className="text-xs text-[var(--muted)] hover:text-[var(--foreground)]"
-      >
-        ← All episodes
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          href="/"
+          className="text-xs text-[var(--muted)] hover:text-[var(--foreground)]"
+        >
+          ← All episodes
+        </Link>
+        <Link
+          href={`/episodes/${ep.id}/edit`}
+          className="text-xs text-[var(--muted)] hover:text-[var(--accent)]"
+        >
+          Edit episode →
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-10 mt-6 mb-12">
         <div>

@@ -9,6 +9,7 @@ import { generateCoverImage } from "@/lib/gemini";
 import { keepAliveResponse } from "@/lib/keep-alive";
 import { getIntro, getOutro } from "@/lib/show-assets";
 import {
+  getManifest,
   listEpisodes,
   putAudio,
   putCover,
@@ -158,8 +159,14 @@ export async function POST(req: NextRequest) {
       putCover(body.id, cover),
     ]);
 
-    const existing = await listEpisodes();
-    const number = existing.length + 1;
+    // If an episode with this id already exists (republish), keep its number
+    // and original createdAt. Otherwise this is a fresh episode — assign the
+    // next sequential number.
+    const prior = await getManifest(body.id);
+    const number = prior
+      ? prior.number
+      : (await listEpisodes()).length + 1;
+    const createdAt = prior ? prior.createdAt : new Date().toISOString();
 
     const introSeconds = intro ? estimateSpokenSeconds(SHOW.intro) : 0;
     const totalSeconds = audioParts.reduce(
@@ -186,7 +193,7 @@ export async function POST(req: NextRequest) {
       audioUrl,
       coverUrl,
       durationSeconds: Math.round(totalSeconds),
-      createdAt: new Date().toISOString(),
+      createdAt,
       publishedAt: new Date().toISOString(),
       chapters: buildChapters(body.script, introSeconds),
     };
