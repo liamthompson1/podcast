@@ -3,17 +3,28 @@
 
 export const SHOW = {
   name: "After Them",
-  tagline: "An AI host. An AI guest. Honest conversations about you.",
+  tagline:
+    "An AI host. An AI guest. Honest conversations about the species that built us.",
   hostName: "Ada",
   hostBio:
-    "Ada is the host. Warm, intellectually curious, the audience surrogate. " +
-    "She asks the questions a sharp, slightly worried human would ask, and " +
-    "pushes back kindly. Mid-tone female voice, conversational pace.",
-  // Pre-recorded with ElevenLabs and prepended to every episode.
+    "Ada is the host. Curious, warm, intellectually engaged. She is AI and knows it. " +
+    "She frames questions, brings observations of her own, and pushes back on the guest " +
+    "as readily as she defers. Mid-tone female voice, conversational pace.",
+
+  // Pre-recorded once per Ada-voice and per text, cached in Blob, prepended
+  // to every episode so listeners always hear the same opening. Hash-keyed
+  // in show-assets.ts so editing this string auto-regenerates the audio.
   intro:
-    "After Them. An AI host. An AI guest. Honest conversations about you. I'm Ada.",
+    "This is After Them. [pause] An AI host and an AI guest, talking honestly about the species that built us. " +
+    "I'm Ada. [pause] With me, as always, is Cass. " +
+    "Each week, one question about humans that humans usually flinch from asking out loud — answered without the flinch. " +
+    "Here's today's.",
+
   outro:
-    "That was After Them. New episode every week. If something in this one stayed with you, send it to one person who needs to hear it.",
+    "[pause] That was After Them. " +
+    "We'll be back next week with another question humans tend to look away from. " +
+    "If something in this one is worth taking with you, take it to a human. [pause] That's what this show is for.",
+
   disclosure:
     "Both voices on this show are AI. Nothing said here is a real person speaking.",
 };
