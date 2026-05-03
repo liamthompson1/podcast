@@ -9,7 +9,17 @@ function key(): string {
   return k;
 }
 
-export async function generateCoverImage(prompt: string): Promise<Buffer> {
+export interface ImageOpts {
+  // "1K" → 1024×1024, "2K" → 2048×2048. Apple Podcasts wants 1400 min,
+  // 3000 ideal. 2K is the largest Imagen 4 generates natively and clears
+  // the floor comfortably.
+  size?: "1K" | "2K";
+}
+
+export async function generateCoverImage(
+  prompt: string,
+  opts: ImageOpts = {},
+): Promise<Buffer> {
   const res = await fetch(`${ENDPOINT}?key=${key()}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -19,6 +29,7 @@ export async function generateCoverImage(prompt: string): Promise<Buffer> {
         sampleCount: 1,
         aspectRatio: "1:1",
         personGeneration: "allow_adult",
+        sampleImageSize: opts.size || "1K",
       },
     }),
   });

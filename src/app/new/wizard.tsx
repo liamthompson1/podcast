@@ -26,9 +26,8 @@ const DRAFT_KEY = "afterus.draft.v1";
 const EMPTY: DraftState = {
   step: 1,
   idea: "",
-  guestName: "Cass",
-  guestPersona:
-    "Cass is short for Cassandra — the truth-teller from Greek myth who saw what was coming and wasn't believed. Sober, knowing, slightly older-sounding. Doesn't moralize, doesn't soften. Always finds the door of agency before the close.",
+  guestName: "",
+  guestPersona: "",
   guestVoiceId: null,
   guestVoiceName: null,
   script: [],

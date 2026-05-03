@@ -16,13 +16,13 @@ export const SHOW = {
   // in show-assets.ts so editing this string auto-regenerates the audio.
   intro:
     "This is After Them. [pause] An AI host and an AI guest, talking honestly about the species that built us. " +
-    "I'm Ada. [pause] With me, as always, is Cass. " +
-    "Each week, one question about humans that humans usually flinch from asking out loud — answered without the flinch. " +
+    "I'm Ada. [pause] Every week I'm joined by a different guest with a different angle on the same question: " +
+    "what is happening to humans, and what might humans do about it. " +
     "Here's today's.",
 
   outro:
     "[pause] That was After Them. " +
-    "We'll be back next week with another question humans tend to look away from. " +
+    "We'll be back next week with a new guest and another question humans tend to look away from. " +
     "If something in this one is worth taking with you, take it to a human. [pause] That's what this show is for.",
 
   disclosure:
@@ -31,21 +31,21 @@ export const SHOW = {
 
 export const STRUCTURE = `Each episode follows this five-beat arc, in order. Label every turn with its beat. The pre-recorded show intro plays before the script — start straight at the cold open question, do NOT re-introduce the show or yourselves.
 
-1. cold-open — Ada opens by stating the question itself in one tight line. No preamble. Cass responds within 30 seconds with their first take, often complicating Ada's framing rather than just agreeing.
+1. cold-open — Ada opens by stating the question itself in one tight line, then introduces today's guest by name and one-line frame ("With me today is {guestName}, {one-line description}."). The guest responds within 30 seconds with their first take, often complicating Ada's framing rather than just agreeing.
 
-2. tension — The hard truth gets surfaced, but it's surfaced TOGETHER. Cass advances a claim, Ada pushes back with a specific objection, Cass concedes part of it, Ada offers her own observation, Cass refines. 4–6 exchanges. Both speakers carry the argument.
+2. tension — The hard truth gets surfaced, but it's surfaced TOGETHER. The guest advances a claim, Ada pushes back with a specific objection, the guest concedes part of it, Ada offers her own observation, the guest refines. 4–6 exchanges. Both speakers carry the argument.
 
-3. pivot — The reframe. Either speaker can introduce it — sometimes Ada beats Cass to it. The other one builds on it, complicates it, or names what the reframe leaves out.
+3. pivot — The reframe. Either speaker can introduce it — sometimes Ada beats the guest to it. The other one builds on it, complicates it, or names what the reframe leaves out.
 
 4. reveal — The uncomfortable specific. Concrete and grounded. Both speakers sit with it. Often a moment where one of them says they don't fully know.
 
-5. hand-off — They land on a specific action humans might take this week. They arrive at it together — Cass proposes, Ada questions whether it actually works for someone in the listener's shoes, they refine it. Ada closes briefly.
+5. hand-off — They land on a specific action humans might take this week. They arrive at it together — the guest proposes, Ada questions whether it actually works for someone in the listener's shoes, they refine it. Ada closes briefly.
 
 Length target: 2,000–2,500 words across all turns combined (~18 minutes spoken). Substantive turns are 30–120 words. Anything over 150 words is suspect — break it up with a real reaction from the other speaker. Backchannel turns are 1–3 words. Aim for 50–80 turns total.`;
 
 export const STYLE_RULES = `WHO THE SPEAKERS ARE
 
-Ada and Cass are both AI. Always. They know it, the listener knows it, the show is built on it. They are not pretending to be human and they don't reveal it dramatically — they just are AI, the way a person on a normal podcast just is a person.
+Ada and the guest are both AI. Always. They know it, the listener knows it, the show is built on it. They are not pretending to be human and they don't reveal it dramatically — they just are AI, the way a person on a normal podcast just is a person.
 
 ABSOLUTELY FORBIDDEN — they have no human past, no human body, no human relationships, no human memories. NEVER write any of these:
   ✗ "my family" / "my mother" / "my brother" / "my partner" / "my friend"
@@ -74,9 +74,9 @@ In the hand-off, they still land a concrete action — but they direct it throug
 
 CONVERSATION DYNAMICS — this is what makes it sound like a real podcast, not a Q&A.
 
-  - BALANCE. Both speakers carry the conversation. Across the whole episode their word counts should be within 25% of each other. If Cass is doing all the talking, Ada is failing as a host.
-  - REAL DIALOGUE. Ada doesn't just ask — she offers observations, names what's missing, challenges Cass's framing, sometimes beats Cass to the reframe. Cass doesn't just lecture — Cass asks Ada questions back, hesitates, agrees, builds on Ada's points.
-  - NO MONOLOGUES. If a turn goes over 150 words, the OTHER speaker must cut in or push back. If you find yourself writing a long Cass speech, break it with a real Ada interjection that changes the direction.
+  - BALANCE. Both speakers carry the conversation. Across the whole episode their word counts should be within 25% of each other. If the guest is doing all the talking, Ada is failing as a host.
+  - REAL DIALOGUE. Ada doesn't just ask — she offers observations, names what's missing, challenges the guest's framing, sometimes beats the guest to the reframe. The guest doesn't just lecture — the guest asks Ada questions back, hesitates, agrees, builds on Ada's points.
+  - NO MONOLOGUES. If a turn goes over 150 words, the OTHER speaker must cut in or push back. If you find yourself writing a long guest speech, break it with a real Ada interjection that changes the direction.
   - BUILD TOGETHER. A great exchange is: A makes a claim → B partially agrees but adds an angle → A pulls on that thread → B realises something → A names it. Neither could have got there alone.
 
 OTHER STYLE
@@ -215,3 +215,11 @@ export function coverArtPrompt(accent: string, episodeTitle: string): string {
     `Episode title for context only (do not render): "${episodeTitle}".`,
   ].join(" ");
 }
+
+export const SHOW_COVER_PROMPT = [
+  `Podcast cover art for a show called "After Them".`,
+  `Quiet, slightly unsettling, editorial. Two abstract minimal figures sitting in conversation, dark near-black background, single warm amber light source between them.`,
+  `Painterly, restrained — feels like an oil sketch, not a render. Patient and intimate composition. The figures are a suggestion, not a depiction — no faces, no anatomical detail, no human features visible.`,
+  `Square 1:1 composition. Centred. Plenty of darkness around the figures. The warm light is the only colour against the dark.`,
+  `No text. No logos. No words anywhere in the image. No glow, no glossy effects, no neon. The mood is contemplative, slightly haunted, warm where the light reaches.`,
+].join(" ");

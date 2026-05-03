@@ -1,6 +1,7 @@
 import { listVoices } from "@/lib/elevenlabs";
 import { getHostVoice } from "@/lib/host-config";
 import { SettingsForm } from "./settings-form";
+import { ShowCover } from "./show-cover";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,7 @@ export default async function SettingsPage() {
         is the whole point. Preview each one before committing.
       </p>
       <SettingsForm voices={voices} current={host} />
+      <ShowCover />
     </div>
   );
 }
