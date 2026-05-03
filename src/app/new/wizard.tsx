@@ -140,17 +140,21 @@ export function Wizard({
 
       {state.step === 1 && (
         <Step
-          title="What's the question?"
-          subtitle="One disturbing, specific question that someone might be afraid to ask out loud. The episode is built backwards from this."
+          title="What's the idea?"
+          subtitle="A brief, a thesis, a topic, or just a question — whatever shape the spark takes. The agent will sharpen it into the cold-open question and build the episode backwards from there."
         >
           <textarea
             value={state.idea}
             onChange={(e) => setField("idea", e.target.value)}
-            placeholder="e.g. Will your job still exist in 2030?"
-            rows={5}
-            className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg px-4 py-3 text-base leading-relaxed"
+            placeholder={`e.g. "What happens to humans when their kids start preferring AI confidants — and the data shows most teenagers already do? Cover the Common Sense Media stat, the parents not noticing, what the AI does that the parent can't, and what to actually do about it without being weird."`}
+            rows={6}
+            className="w-full bg-white border border-[var(--border)] rounded-lg px-4 py-3 text-base leading-relaxed"
             autoFocus
           />
+          <p className="text-xs text-[var(--muted)] mt-2">
+            Short questions work too — both of these become the same kind of
+            episode.
+          </p>
           <ExampleChips
             onPick={(t) => setField("idea", t)}
             chips={[

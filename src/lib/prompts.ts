@@ -159,7 +159,11 @@ export function scriptGenUserPrompt({
   return [
     `Write the full episode script. Call submit_script exactly once.`,
     "",
-    `Episode idea: ${idea}`,
+    `EPISODE BRIEF — this might be a sharp question, a topic, a thesis, a longer paragraph of context, or any combination. Distil it into ONE specific question that opens the cold-open in Ada's first turn. Use any concrete details, data points, or angles in the brief throughout the episode. The brief is the source material; the question is the entry point.`,
+    "",
+    `--- BRIEF ---`,
+    idea,
+    `--- END BRIEF ---`,
     "",
     `Guest name: ${guestName}`,
     `Guest persona: ${guestPersona}`,

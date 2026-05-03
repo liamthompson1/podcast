@@ -2,6 +2,7 @@ import Link from "next/link";
 import { list } from "@vercel/blob";
 import { listEpisodes } from "@/lib/storage";
 import { getHostVoice } from "@/lib/host-config";
+import { RegenerateCoverButton } from "./regenerate-cover-button";
 
 export const dynamic = "force-dynamic";
 
@@ -103,30 +104,42 @@ export default async function Home() {
         ) : (
           <ul className="space-y-3">
             {episodes.map((ep) => (
-              <li key={ep.id}>
-                <Link
-                  href={`/episodes/${ep.id}`}
-                  className="flex gap-5 items-start bg-white border border-[var(--border)] hover:border-[var(--foreground)]/30 rounded-lg p-4 transition-colors"
-                >
+              <li
+                key={ep.id}
+                className="flex gap-5 items-start bg-white border border-[var(--border)] hover:border-[var(--foreground)]/30 rounded-lg p-4 transition-colors"
+              >
+                <Link href={`/episodes/${ep.id}`} className="shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={ep.coverUrl}
                     alt=""
                     className="w-20 h-20 rounded object-cover bg-[var(--surface)]"
                   />
-                  <div className="flex-1 min-w-0">
+                </Link>
+                <div className="flex-1 min-w-0">
+                  <Link href={`/episodes/${ep.id}`} className="block group">
                     <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                       Ep {ep.number} · {fmtDuration(ep.durationSeconds)} ·{" "}
                       {ep.guestName}
                     </p>
-                    <h3 className="serif text-2xl mt-1 leading-tight text-[var(--foreground)]">
+                    <h3 className="serif text-2xl mt-1 leading-tight text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
                       {ep.title}
                     </h3>
                     <p className="text-sm text-[var(--muted)] mt-2 line-clamp-2">
                       {ep.description}
                     </p>
+                  </Link>
+                  <div className="mt-3 flex items-center gap-3 text-xs">
+                    <Link
+                      href={`/episodes/${ep.id}/edit`}
+                      className="text-[var(--muted)] hover:text-[var(--foreground)]"
+                    >
+                      Edit
+                    </Link>
+                    <span className="text-[var(--border)]">·</span>
+                    <RegenerateCoverButton id={ep.id} />
                   </div>
-                </Link>
+                </div>
               </li>
             ))}
           </ul>
