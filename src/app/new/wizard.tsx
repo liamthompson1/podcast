@@ -266,28 +266,32 @@ function Stepper({ step }: { step: Step }) {
   const labels = ["Idea", "Guest", "Script", "Publish"];
   return (
     <div className="flex items-center gap-2 mb-10 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-      {labels.map((l, i) => (
-        <span
-          key={l}
-          className={`flex items-center gap-2 ${
-            i + 1 === step ? "text-[var(--foreground)]" : ""
-          }`}
-        >
+      {labels.map((l, i) => {
+        const n = i + 1;
+        const reached = n <= step;
+        return (
           <span
-            className={`inline-block w-5 h-5 rounded-full border ${
-              i + 1 <= step
-                ? "bg-[var(--accent)] text-black border-[var(--accent)] text-[10px] flex items-center justify-center"
-                : "border-[var(--border)]"
+            key={l}
+            className={`flex items-center gap-2 ${
+              n === step ? "text-[var(--foreground)]" : ""
             }`}
           >
-            {i + 1 <= step ? i + 1 : ""}
+            <span
+              className={`inline-flex shrink-0 w-6 h-6 rounded-full items-center justify-center text-[11px] font-medium leading-none ${
+                reached
+                  ? "bg-[var(--accent)] text-white"
+                  : "bg-transparent text-[var(--muted)] border border-[var(--border)]"
+              }`}
+            >
+              {n}
+            </span>
+            {l}
+            {i < labels.length - 1 && (
+              <span className="mx-1 text-[var(--border)]">/</span>
+            )}
           </span>
-          {l}
-          {i < labels.length - 1 && (
-            <span className="mx-1 text-[var(--border)]">/</span>
-          )}
-        </span>
-      ))}
+        );
+      })}
     </div>
   );
 }
