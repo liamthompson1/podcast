@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import type Anthropic from "@anthropic-ai/sdk";
 import { anthropic, MODELS } from "@/lib/anthropic";
+import { keepAliveResponse } from "@/lib/keep-alive";
 import {
   showSystemPrompt,
   scriptGenUserPrompt,
@@ -54,15 +55,15 @@ const SCRIPT_TOOL: Anthropic.Tool = {
 };
 
 export async function POST(req: NextRequest) {
-  try {
-    const input = (await req.json()) as ScriptGenInput;
-    if (!input.idea || !input.guestName || !input.guestPersona) {
-      return NextResponse.json(
-        { error: "idea, guestName, guestPersona required" },
-        { status: 400 },
-      );
-    }
+  const input = (await req.json()) as ScriptGenInput;
+  if (!input.idea || !input.guestName || !input.guestPersona) {
+    return NextResponse.json(
+      { error: "idea, guestName, guestPersona required" },
+      { status: 400 },
+    );
+  }
 
+  return keepAliveResponse(async () => {
     const result = await anthropic().messages.create({
       model: MODELS.scriptWriter,
       max_tokens: 8000,
@@ -74,10 +75,7 @@ export async function POST(req: NextRequest) {
 
     const toolUse = result.content.find((b) => b.type === "tool_use");
     if (!toolUse || toolUse.type !== "tool_use") {
-      return NextResponse.json(
-        { error: "model did not return tool use" },
-        { status: 502 },
-      );
+      throw new Error("model did not return tool use");
     }
 
     const payload = toolUse.input as {
@@ -85,17 +83,9 @@ export async function POST(req: NextRequest) {
       turns: Array<Omit<ScriptTurn, "id">>;
     };
 
-    const turns: ScriptTurn[] = payload.turns.map((t, i) => ({
-      ...t,
-      id: `t${i + 1}`,
-    }));
-
-    return NextResponse.json({
+    return {
       workingTitle: payload.workingTitle,
-      turns,
-    });
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "unknown";
-    return NextResponse.json({ error: msg }, { status: 500 });
-  }
+      turns: payload.turns.map((t, i) => ({ ...t, id: `t${i + 1}` })),
+    };
+  });
 }

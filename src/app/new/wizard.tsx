@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { ElevenLabsVoice, ScriptTurn } from "@/lib/types";
+import type { ElevenLabsVoice, ScriptTurn, PublishedEpisode } from "@/lib/types";
 import { VoicePicker } from "@/components/voice-picker";
 import { ScriptEditor } from "./script-editor";
 import { PublishProgress } from "./publish-progress";
+import { readResultStream } from "@/lib/client-stream";
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -46,6 +47,7 @@ export function Wizard({
   const [generating, setGenerating] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [progressMs, setProgressMs] = useState(0);
 
   useEffect(() => {
     try {
@@ -75,6 +77,7 @@ export function Wizard({
   async function generate() {
     setGenerating(true);
     setError(null);
+    setProgressMs(0);
     try {
       const res = await fetch("/api/script/generate", {
         method: "POST",
@@ -85,8 +88,10 @@ export function Wizard({
           guestPersona: state.guestPersona,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "generate failed");
+      const data = await readResultStream<{
+        workingTitle: string;
+        turns: ScriptTurn[];
+      }>(res, setProgressMs);
       setState((s) => ({
         ...s,
         script: data.turns,
@@ -103,6 +108,7 @@ export function Wizard({
   async function publish() {
     setPublishing(true);
     setError(null);
+    setProgressMs(0);
     setState((s) => ({ ...s, step: 4 }));
     try {
       const id = crypto.randomUUID();
@@ -118,8 +124,7 @@ export function Wizard({
           script: state.script,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "publish failed");
+      const data = await readResultStream<PublishedEpisode>(res, setProgressMs);
       localStorage.removeItem(DRAFT_KEY);
       router.push(`/episodes/${data.id}`);
     } catch (e) {
@@ -202,7 +207,11 @@ export function Wizard({
           <Nav
             onBack={() => setField("step", 1)}
             onNext={generate}
-            nextLabel={generating ? "Writing…" : "Generate script"}
+            nextLabel={
+              generating
+                ? `Writing… ${Math.round(progressMs / 1000)}s`
+                : "Generate script"
+            }
             nextDisabled={
               !state.guestName ||
               !state.guestPersona ||
@@ -244,7 +253,7 @@ export function Wizard({
         </Step>
       )}
 
-      {state.step === 4 && <PublishProgress />}
+      {state.step === 4 && <PublishProgress elapsedMs={progressMs} />}
     </div>
   );
 }

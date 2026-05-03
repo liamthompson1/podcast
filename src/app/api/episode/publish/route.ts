@@ -6,6 +6,7 @@ import { ttsParallel } from "@/lib/elevenlabs";
 import { concatMp3, withLeadingBreak, estimateSpokenSeconds } from "@/lib/audio";
 import { getHostVoice } from "@/lib/host-config";
 import { generateCoverImage } from "@/lib/gemini";
+import { keepAliveResponse } from "@/lib/keep-alive";
 import { getIntro, getOutro } from "@/lib/show-assets";
 import {
   listEpisodes,
@@ -102,19 +103,20 @@ function buildChapters(
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    const body = (await req.json()) as PublishRequest;
-    if (!body.id || !body.script?.length || !body.guestVoiceId) {
-      return NextResponse.json({ error: "missing fields" }, { status: 400 });
-    }
+  const body = (await req.json()) as PublishRequest;
+  if (!body.id || !body.script?.length || !body.guestVoiceId) {
+    return NextResponse.json({ error: "missing fields" }, { status: 400 });
+  }
 
-    const host = await getHostVoice();
-    if (!host) {
-      return NextResponse.json(
-        { error: "host voice not configured — pick Ada in /settings first" },
-        { status: 400 },
-      );
-    }
+  const host = await getHostVoice();
+  if (!host) {
+    return NextResponse.json(
+      { error: "host voice not configured — pick Ada in /settings first" },
+      { status: 400 },
+    );
+  }
+
+  return keepAliveResponse(async () => {
 
     // Run metadata generation in parallel with TTS — both take time.
     const metadataPromise = generateMetadata(body.script, body.idea);
@@ -194,9 +196,6 @@ export async function POST(req: NextRequest) {
 
     await putManifest(ep);
 
-    return NextResponse.json(ep);
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "unknown";
-    return NextResponse.json({ error: msg }, { status: 500 });
-  }
+    return ep;
+  });
 }

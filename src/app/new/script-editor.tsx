@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ScriptTurn, BeatLabel } from "@/lib/types";
+import { readResultStream } from "@/lib/client-stream";
 
 interface Props {
   script: ScriptTurn[];
@@ -67,8 +68,11 @@ export function ScriptEditor({ script, guestName, onScriptChange }: Props) {
           guestName,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "edit failed");
+      const data = await readResultStream<{
+        assistantMessage: string;
+        script: ScriptTurn[];
+        changes: string[];
+      }>(res);
       onScriptChange(data.script);
       setMessages([
         ...next,

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { anthropic, MODELS } from "@/lib/anthropic";
+import { keepAliveResponse } from "@/lib/keep-alive";
 import { showSystemPrompt } from "@/lib/prompts";
 import type { ScriptTurn } from "@/lib/types";
 
@@ -159,10 +160,10 @@ function scriptToMarkdown(script: ScriptTurn[], guestName: string): string {
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    const body = (await req.json()) as EditRequest;
-    const { script, userMessage, history, guestName } = body;
+  const body = (await req.json()) as EditRequest;
+  const { script, userMessage, history, guestName } = body;
 
+  return keepAliveResponse(async () => {
     const editorSystem = `${showSystemPrompt()}
 
 You are now in EDITOR mode. The user has a draft script and wants you to refine it.
@@ -210,13 +211,10 @@ ${scriptToMarkdown(script, guestName)}`;
       toolCalls,
     );
 
-    return NextResponse.json({
+    return {
       assistantMessage: textBlocks || "Done.",
       script: nextScript,
       changes: applyLog,
-    });
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "unknown";
-    return NextResponse.json({ error: msg }, { status: 500 });
-  }
+    };
+  });
 }
