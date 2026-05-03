@@ -201,21 +201,31 @@ export function metadataPrompt(scriptText: string, idea: string): string {
     `  "title": "string — punchy, max 60 chars, ideally a question",`,
     `  "description": "string — 2 short paragraphs, ~120 words total, ends with one-line listener takeaway. Do not start with the word 'In'.",`,
     `  "showNotes": "string — markdown with: 1-line summary, '## What we cover' bullet list (5-7 bullets), '## The action this week' (the guest's hand-off, one line), '## Voices' (Ada — host (AI), {guestName} — guest (AI)), '## Disclosure' (the disclosure line).",`,
-    `  "coverAccentPrompt": "string — 6-12 words describing a single mood/colour for the cover art (e.g. 'cold blue light, distant', 'warm amber, intimate'). Reflects the episode's emotional centre."`,
+    `  "coverAccentPrompt": "string — 8-15 words describing ONE small physical-scene variation within the show's locked visual identity (sunlit white studio, single black mic with red recording light, possibly headphones, empty chair). Examples: 'morning side-light from the right, no headphones visible, cable coiled tight'; 'second microphone added on the opposite side, both cables crossing on the desk'; 'rain shadows on the wall behind, chair pulled closer to the mic'; 'open notebook and pen beside the mic, pages slightly fluttered'; 'low evening light, longer shadows reaching across the desk'. RULES: never change the colour palette, never add saturated colour beyond the red recording light, never add people, never add text. Only physical objects, light angle, or composition."`,
     `}`,
   ].join("\n");
 }
 
 export function coverArtPrompt(accent: string, episodeTitle: string): string {
+  // Used WITH the show cover passed as a reference image. The reference
+  // locks the brand visual; this prompt asks for one specific variation.
   return [
-    `Bright minimal podcast episode cover art in the "After Them" visual identity.`,
-    `Sunlit white studio space, soft natural daylight from the side casting gentle diagonal shadows on a pale wall.`,
-    `Foreground: a single matte black studio condenser microphone on a stand, with a small glowing red recording-light dot. Optionally a pair of black over-ear headphones resting on the white desk surface.`,
-    `Photographic realism, slightly clinical, contemplative. Editorial quality.`,
-    `Episode mood / variation: ${accent}. Reflect the mood subtly through props, lighting angle, or a small additional object — never through colour saturation. Stay restrained.`,
-    `Square 1:1. No text. No logos. No people. No words anywhere in the image. The only saturated colour is the small red recording-light dot.`,
-    `Episode title for context only (do not render): "${episodeTitle}".`,
-  ].join(" ");
+    `Generate a new podcast episode cover for the show "After Them" by varying the attached reference image.`,
+    "",
+    `KEEP EXACTLY:`,
+    `- The bright sunlit white studio aesthetic`,
+    `- The matte black studio microphone with the small red recording-light dot`,
+    `- Photographic realism, soft natural daylight, restrained editorial mood`,
+    `- Square 1:1 composition`,
+    `- The exact same colour palette (white walls, black mic, single red dot, neutral greys)`,
+    `- No text anywhere — the title 'AFTER THEM' that appears in the reference will be added later in code, you must NOT render any text`,
+    "",
+    `CHANGE — apply this single variation: ${accent}`,
+    "",
+    `Constraints: never add saturated colour beyond the existing red recording light. Never add people. Never render any text or letters anywhere in the image. The change should be subtle but recognisable — the kind of variation a photographer would make between shots in the same series.`,
+    "",
+    `Episode title for context only (do NOT render in image): "${episodeTitle}"`,
+  ].join("\n");
 }
 
 export const SHOW_COVER_PROMPT = [

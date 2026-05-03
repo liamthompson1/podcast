@@ -5,7 +5,11 @@ import { metadataPrompt, coverArtPrompt, SHOW } from "@/lib/prompts";
 import { ttsParallel } from "@/lib/elevenlabs";
 import { concatMp3, withLeadingBreak, estimateSpokenSeconds } from "@/lib/audio";
 import { getHostVoice } from "@/lib/host-config";
-import { generateCoverImage } from "@/lib/gemini";
+import {
+  generateCoverImage,
+  generateCoverImageFromReference,
+  getShowCoverReference,
+} from "@/lib/gemini";
 import { keepAliveResponse } from "@/lib/keep-alive";
 import { getIntro, getOutro } from "@/lib/show-assets";
 import {
@@ -143,9 +147,16 @@ export async function POST(req: NextRequest) {
     const outro = await getOutro(host.voiceId).catch(() => null);
     const metadata = await metadataPromise;
 
-    const coverPromise = generateCoverImage(
-      coverArtPrompt(metadata.coverAccentPrompt, metadata.title),
+    // Episode covers vary the show cover. If the show cover hasn't been
+    // uploaded yet, fall back to text-only Imagen (still in brand style).
+    const reference = await getShowCoverReference();
+    const coverPrompt = coverArtPrompt(
+      metadata.coverAccentPrompt,
+      metadata.title,
     );
+    const coverPromise = reference
+      ? generateCoverImageFromReference(coverPrompt, reference)
+      : generateCoverImage(coverPrompt);
 
     const audioParts: Buffer[] = [];
     if (intro) audioParts.push(intro);

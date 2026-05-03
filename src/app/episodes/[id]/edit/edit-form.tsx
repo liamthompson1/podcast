@@ -16,7 +16,7 @@ export function EditForm({ episode }: { episode: PublishedEpisode }) {
     episode.guestPersona || "",
   );
   const [busy, setBusy] = useState<
-    "none" | "publishing" | "deleting" | "regenerating"
+    "none" | "publishing" | "deleting" | "regenerating" | "covering"
   >("none");
   const [progressMs, setProgressMs] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +83,24 @@ export function EditForm({ episode }: { episode: PublishedEpisode }) {
         setProgressMs,
       );
       router.push(`/episodes/${updated.id}`);
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "unknown");
+      setBusy("none");
+    }
+  }
+
+  async function regenerateCover() {
+    setBusy("covering");
+    setError(null);
+    setProgressMs(0);
+    try {
+      const res = await fetch(
+        `/api/episodes/${episode.id}/regenerate-cover`,
+        { method: "POST" },
+      );
+      await readResultStream(res, setProgressMs);
+      router.push(`/episodes/${episode.id}`);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "unknown");
@@ -208,13 +226,22 @@ export function EditForm({ episode }: { episode: PublishedEpisode }) {
       />
 
       <div className="mt-8 flex items-center justify-between">
-        <button
-          onClick={remove}
-          disabled={busy !== "none"}
-          className="text-xs text-[var(--muted)] hover:text-red-400 disabled:opacity-40"
-        >
-          {busy === "deleting" ? "Deleting…" : "Delete episode"}
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={remove}
+            disabled={busy !== "none"}
+            className="text-xs text-[var(--muted)] hover:text-red-400 disabled:opacity-40"
+          >
+            {busy === "deleting" ? "Deleting…" : "Delete episode"}
+          </button>
+          <button
+            onClick={regenerateCover}
+            disabled={busy !== "none"}
+            className="text-xs text-[var(--muted)] hover:text-[var(--accent)] disabled:opacity-40"
+          >
+            {busy === "covering" ? "Painting cover…" : "Regenerate cover only"}
+          </button>
+        </div>
         <div className="flex items-center gap-3">
           <Link
             href={`/episodes/${episode.id}`}
@@ -225,7 +252,7 @@ export function EditForm({ episode }: { episode: PublishedEpisode }) {
           <button
             onClick={republish}
             disabled={busy !== "none"}
-            className="bg-[var(--accent)] text-black px-5 py-2.5 rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-40"
+            className="bg-[var(--foreground)] text-[var(--background)] px-5 py-2.5 rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-40"
           >
             Save &amp; republish
           </button>
