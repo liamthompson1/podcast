@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     const result = await anthropic().messages.create({
       model: MODELS.scriptWriter,
-      max_tokens: 8000,
+      max_tokens: 6000,
       system: showSystemPrompt(),
       tools: [SCRIPT_TOOL],
       tool_choice: { type: "tool", name: "submit_script" },

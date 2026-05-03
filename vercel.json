@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "src/app/api/script/generate/route.ts": { "maxDuration": 300 },
+    "src/app/api/script/edit/route.ts": { "maxDuration": 300 },
+    "src/app/api/episode/publish/route.ts": { "maxDuration": 300 },
+    "src/app/api/voices/preview/route.ts": { "maxDuration": 60 }
+  }
+}

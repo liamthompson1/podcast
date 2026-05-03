@@ -8,7 +8,7 @@ export function anthropic(): Anthropic {
 }
 
 export const MODELS = {
-  scriptWriter: "claude-opus-4-7",
-  editorAgent: "claude-opus-4-7",
-  metadata: "claude-sonnet-4-6",
+  scriptWriter: "claude-sonnet-4-6",
+  editorAgent: "claude-sonnet-4-6",
+  metadata: "claude-haiku-4-5-20251001",
 } as const;
