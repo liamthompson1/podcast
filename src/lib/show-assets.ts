@@ -1,7 +1,7 @@
 // Pre-rendered intro/outro audio in Ada's voice. Generated once per voice
-// and cached in Vercel Blob so every episode bookends with the exact same
-// take — that's what makes a podcast intro "yours". When you change Ada's
-// voice in /settings, the next publish regenerates with the new voice.
+// AND once per text — the cache key includes a hash of the script so editing
+// SHOW.intro / SHOW.outro automatically triggers a fresh recording on the
+// next publish. Without this, the first cached version sticks forever.
 
 import { put, list } from "@vercel/blob";
 import { tts } from "./elevenlabs";
@@ -11,6 +11,17 @@ const PREFIX = "assets/";
 
 function token(): string | undefined {
   return process.env.BLOB_READ_WRITE_TOKEN;
+}
+
+// Tiny FNV-1a hash — stable across runtimes, 8 hex chars is plenty for
+// avoiding collisions across our handful of intro/outro variants.
+function shortHash(s: string): string {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0).toString(16).padStart(8, "0");
 }
 
 async function fetchExisting(pathname: string): Promise<Buffer | null> {
@@ -31,7 +42,7 @@ async function ensureAsset(
   voiceId: string,
   text: string,
 ): Promise<Buffer> {
-  const path = `${PREFIX}${kind}-${voiceId}.mp3`;
+  const path = `${PREFIX}${kind}-${voiceId}-${shortHash(text)}.mp3`;
   const existing = await fetchExisting(path);
   if (existing) return existing;
   const buf = await tts({ voiceId, text });
