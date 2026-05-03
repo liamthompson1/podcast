@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import type Anthropic from "@anthropic-ai/sdk";
 import { anthropic, MODELS } from "@/lib/anthropic";
 import {
   showSystemPrompt,
@@ -10,12 +11,12 @@ import type { ScriptTurn } from "@/lib/types";
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
-const SCRIPT_TOOL = {
+const SCRIPT_TOOL: Anthropic.Tool = {
   name: "submit_script",
   description:
     "Submit the finished script for the episode. Call exactly once with all turns in order.",
   input_schema: {
-    type: "object" as const,
+    type: "object",
     properties: {
       workingTitle: {
         type: "string",

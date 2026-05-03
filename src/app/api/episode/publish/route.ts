@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import type Anthropic from "@anthropic-ai/sdk";
 import { anthropic, MODELS } from "@/lib/anthropic";
 import { metadataPrompt, coverArtPrompt, SHOW } from "@/lib/prompts";
 import { ttsParallel } from "@/lib/elevenlabs";
@@ -30,11 +31,11 @@ interface PublishRequest {
   script: ScriptTurn[];
 }
 
-const METADATA_TOOL = {
+const METADATA_TOOL: Anthropic.Tool = {
   name: "submit_metadata",
   description: "Submit final episode metadata.",
   input_schema: {
-    type: "object" as const,
+    type: "object",
     properties: {
       title: { type: "string" },
       description: { type: "string" },

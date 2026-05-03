@@ -18,13 +18,15 @@ interface EditRequest {
   guestName: string;
 }
 
-const TOOLS = [
+import type Anthropic from "@anthropic-ai/sdk";
+
+const TOOLS: Anthropic.Tool[] = [
   {
     name: "replace_turn",
     description:
       "Replace the full text of a single existing turn. Use for rewrites of one beat.",
     input_schema: {
-      type: "object" as const,
+      type: "object",
       properties: {
         turnId: { type: "string" },
         newText: { type: "string" },
@@ -37,7 +39,7 @@ const TOOLS = [
     description:
       "Insert a new turn after the given turnId. Use to add a beat the user wants.",
     input_schema: {
-      type: "object" as const,
+      type: "object",
       properties: {
         afterTurnId: { type: "string" },
         speaker: { type: "string", enum: ["Ada", "Guest"] },
@@ -54,7 +56,7 @@ const TOOLS = [
     name: "delete_turn",
     description: "Remove a turn entirely.",
     input_schema: {
-      type: "object" as const,
+      type: "object",
       properties: { turnId: { type: "string" } },
       required: ["turnId"],
     },
@@ -64,7 +66,7 @@ const TOOLS = [
     description:
       "Replace the entire script. Only use when the user asks for a wholesale rewrite.",
     input_schema: {
-      type: "object" as const,
+      type: "object",
       properties: {
         turns: {
           type: "array",
@@ -85,7 +87,7 @@ const TOOLS = [
       required: ["turns"],
     },
   },
-] as const;
+];
 
 function applyTools(
   script: ScriptTurn[],
@@ -179,7 +181,7 @@ ${scriptToMarkdown(script, guestName)}`;
       model: MODELS.editorAgent,
       max_tokens: 6000,
       system: editorSystem,
-      tools: [...TOOLS],
+      tools: TOOLS,
       messages,
     });
 
