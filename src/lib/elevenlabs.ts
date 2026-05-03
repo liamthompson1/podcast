@@ -75,14 +75,25 @@ export async function tts(opts: TtsOpts): Promise<Buffer> {
 
 export async function ttsParallel(
   items: Array<{ voiceId: string; text: string }>,
-  concurrency = 6,
+  concurrency = 4,
 ): Promise<Buffer[]> {
   const out: Buffer[] = new Array(items.length);
   let i = 0;
   async function worker() {
     while (i < items.length) {
       const idx = i++;
-      out[idx] = await tts(items[idx]);
+      // Retry once on 429 (concurrency hiccup) with a short backoff.
+      try {
+        out[idx] = await tts(items[idx]);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "";
+        if (/429|concurrent_limit/.test(msg)) {
+          await new Promise((r) => setTimeout(r, 1500 + Math.random() * 1000));
+          out[idx] = await tts(items[idx]);
+        } else {
+          throw e;
+        }
+      }
     }
   }
   await Promise.all(

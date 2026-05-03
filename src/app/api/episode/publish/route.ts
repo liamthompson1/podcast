@@ -134,14 +134,11 @@ export async function POST(req: NextRequest) {
       else breakMs = 350;
       return { voiceId, text: withLeadingBreak(turn.text, breakMs) };
     });
-    const turnBuffersPromise = ttsParallel(ttsItems, 6);
-
-    const [intro, outro] = await Promise.all([
-      getIntro(host.voiceId).catch(() => null),
-      getOutro(host.voiceId).catch(() => null),
-    ]);
-
-    const turnBuffers = await turnBuffersPromise;
+    // ElevenLabs Creator plan caps at 5 concurrent requests. Stay at 4 to
+    // leave headroom for any retry, and run intro/outro sequentially after.
+    const turnBuffers = await ttsParallel(ttsItems, 4);
+    const intro = await getIntro(host.voiceId).catch(() => null);
+    const outro = await getOutro(host.voiceId).catch(() => null);
     const metadata = await metadataPromise;
 
     const coverPromise = generateCoverImage(
