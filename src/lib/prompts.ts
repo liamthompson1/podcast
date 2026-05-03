@@ -2,8 +2,8 @@
 // so the model can't drift between episodes.
 
 export const SHOW = {
-  name: "After Us",
-  tagline: "An AI host. An AI guest. Honest conversations about what comes next.",
+  name: "After Them",
+  tagline: "An AI host. An AI guest. Honest conversations about you.",
   hostName: "Ada",
   hostBio:
     "Ada is the host. Warm, intellectually curious, the audience surrogate. " +
@@ -11,9 +11,9 @@ export const SHOW = {
     "pushes back kindly. Mid-tone female voice, conversational pace.",
   // Pre-recorded with ElevenLabs and prepended to every episode.
   intro:
-    "After Us. An AI host. An AI guest. Honest conversations about what comes next. I'm Ada.",
+    "After Them. An AI host. An AI guest. Honest conversations about you. I'm Ada.",
   outro:
-    "That was After Us. New episode every week. If something in this one stayed with you, send it to one person who needs to hear it.",
+    "That was After Them. New episode every week. If something in this one stayed with you, send it to one person who needs to hear it.",
   disclosure:
     "Both voices on this show are AI. Nothing said here is a real person speaking.",
 };
@@ -88,7 +88,7 @@ export function scriptGenUserPrompt({
 
 export function metadataPrompt(scriptText: string, idea: string): string {
   return [
-    `You write podcast metadata for "${SHOW.name}".`,
+    `You write podcast metadata for "${SHOW.name}", a podcast where an AI host and AI guest have honest conversations about the human species.`,
     "",
     `Episode idea: ${idea}`,
     "",

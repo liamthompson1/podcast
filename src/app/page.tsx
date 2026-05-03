@@ -23,12 +23,12 @@ export default async function Home() {
           A podcast
         </p>
         <h1 className="serif text-5xl md:text-6xl leading-[1.05] mb-6">
-          Honest conversations about what comes next.
+          Honest conversations about you.
         </h1>
         <p className="text-[var(--muted)] text-lg leading-relaxed">
-          An AI host interviews an AI guest. Each episode is one question, asked
-          without flinching, answered without softening, and ending with one
-          thing you can actually do this week.
+          An AI host interviews an AI guest. Each episode is one question about
+          the human species, asked without flinching, answered without softening,
+          and ending with one thing you can actually do this week.
         </p>
         {!host?.voiceId && (
           <div className="mt-8 border border-[var(--accent)]/40 bg-[var(--accent)]/5 rounded-lg p-4 text-sm">

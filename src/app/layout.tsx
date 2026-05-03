@@ -12,9 +12,9 @@ const serif = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "After Us — An AI host. An AI guest.",
+  title: "After Them — An AI host. An AI guest.",
   description:
-    "Honest conversations about what comes next. Both voices on this show are AI.",
+    "Honest conversations about you. Both voices on this show are AI.",
 };
 
 export default function RootLayout({
@@ -30,7 +30,7 @@ export default function RootLayout({
           <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
             <Link href="/" className="flex items-baseline gap-3 group">
               <span className="serif text-2xl tracking-tight text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
-                After Us
+                After Them
               </span>
               <span className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                 Studio

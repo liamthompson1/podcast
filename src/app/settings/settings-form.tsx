@@ -44,7 +44,7 @@ export function SettingsForm({
         voices={voices}
         value={picked}
         onChange={setPicked}
-        previewText="After Us. An AI host. An AI guest. Honest conversations about what comes next. I'm Ada."
+        previewText="After Them. An AI host. An AI guest. Honest conversations about you. I'm Ada."
       />
       <div className="mt-8 flex items-center gap-4">
         <button

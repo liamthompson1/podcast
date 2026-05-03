@@ -31,7 +31,7 @@ export async function GET(
   return new NextResponse(lines.join("\n\n"), {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Content-Disposition": `attachment; filename="after-us-ep${ep.number}.txt"`,
+      "Content-Disposition": `attachment; filename="after-them-ep${ep.number}.txt"`,
     },
   });
 }

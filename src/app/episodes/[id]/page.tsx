@@ -41,7 +41,7 @@ export default async function EpisodePage({
         </div>
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-[var(--muted)] mb-3">
-            After Us · Episode {ep.number}
+            After Them · Episode {ep.number}
           </p>
           <h1 className="serif text-4xl md:text-5xl leading-[1.05] mb-4">
             {ep.title}
@@ -85,7 +85,7 @@ export default async function EpisodePage({
               <li>
                 <a
                   href={ep.audioUrl}
-                  download={`after-us-ep${ep.number}.mp3`}
+                  download={`after-them-ep${ep.number}.mp3`}
                   className="text-[var(--accent)] hover:underline underline-offset-4"
                 >
                   Audio (.mp3)
@@ -94,7 +94,7 @@ export default async function EpisodePage({
               <li>
                 <a
                   href={ep.coverUrl}
-                  download={`after-us-ep${ep.number}-cover.png`}
+                  download={`after-them-ep${ep.number}-cover.png`}
                   className="text-[var(--accent)] hover:underline underline-offset-4"
                 >
                   Cover art (.png)

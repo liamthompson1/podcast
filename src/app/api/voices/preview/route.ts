@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const maxDuration = 30;
 
 const SAMPLE =
-  "After Us. An AI host. An AI guest. Honest conversations about what comes next.";
+  "After Them. An AI host. An AI guest. Honest conversations about you.";
 
 export async function POST(req: NextRequest) {
   try {
