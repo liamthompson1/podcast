@@ -5,6 +5,9 @@ export interface ScriptTurn {
   speaker: Speaker;
   text: string;
   beat?: BeatLabel;
+  // True = this turn cuts in on the previous one (no breath before, fast cut).
+  // Use for interruptions and backchannel reactions ("mm", "right").
+  interruption?: boolean;
 }
 
 export type BeatLabel =

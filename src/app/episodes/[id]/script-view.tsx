@@ -10,6 +10,23 @@ const BEAT_LABELS: Record<BeatLabel, string> = {
   "hand-off": "Hand-off",
 };
 
+// Render audio tags ([pause], [laughs] etc.) as dim italic spans inline.
+function renderText(text: string) {
+  const parts = text.split(/(\[[^\]]+\])/g);
+  return parts.map((p, i) =>
+    /^\[[^\]]+\]$/.test(p) ? (
+      <em
+        key={i}
+        className="text-[var(--muted)] not-italic text-[0.85em] opacity-60"
+      >
+        {p}
+      </em>
+    ) : (
+      <span key={i}>{p}</span>
+    ),
+  );
+}
+
 export function ScriptView({
   script,
   guestName,
@@ -38,7 +55,9 @@ export function ScriptView({
               >
                 {isAda ? "Ada" : guestName}:
               </span>
-              <span className="text-[var(--foreground)]/90">{t.text}</span>
+              <span className="text-[var(--foreground)]/90">
+                {renderText(t.text)}
+              </span>
             </p>
           </div>
         );

@@ -24,7 +24,7 @@ const SCRIPT_TOOL: Anthropic.Tool = {
       },
       turns: {
         type: "array",
-        minItems: 20,
+        minItems: 30,
         items: {
           type: "object",
           properties: {
@@ -33,7 +33,17 @@ const SCRIPT_TOOL: Anthropic.Tool = {
               type: "string",
               enum: ["cold-open", "tension", "pivot", "reveal", "hand-off"],
             },
-            text: { type: "string", minLength: 1 },
+            text: {
+              type: "string",
+              minLength: 1,
+              description:
+                "Spoken text. Include inline ElevenLabs v3 audio tags like [pause] [laughs] [exhales] [softly] sparingly and BEFORE the words they colour. End with em-dash if interrupted.",
+            },
+            interruption: {
+              type: "boolean",
+              description:
+                "True if this turn cuts in on the previous (interruption or backchannel like 'Mm.' 'Right.'). False/omitted for normal turns.",
+            },
           },
           required: ["speaker", "beat", "text"],
         },
@@ -55,7 +65,7 @@ export async function POST(req: NextRequest) {
 
     const result = await anthropic().messages.create({
       model: MODELS.scriptWriter,
-      max_tokens: 6000,
+      max_tokens: 8000,
       system: showSystemPrompt(),
       tools: [SCRIPT_TOOL],
       tool_choice: { type: "tool", name: "submit_script" },

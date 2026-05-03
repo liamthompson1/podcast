@@ -116,13 +116,18 @@ export function ScriptEditor({ script, guestName, onScriptChange }: Props) {
                 className={`rounded-md border-l-2 ${BEAT_TINTS[beat]} bg-[var(--surface)] border border-[var(--border)] px-4 py-3`}
               >
                 <div className="flex items-center justify-between text-xs text-[var(--muted)] mb-1.5">
-                  <span>
+                  <span className="flex items-center gap-2">
                     <span
                       className={`font-medium ${isAda ? "text-[var(--accent)]" : "text-[var(--foreground)]"}`}
                     >
                       {isAda ? "Ada" : guestName}
-                    </span>{" "}
-                    · {BEAT_LABELS[beat]}
+                    </span>
+                    <span>· {BEAT_LABELS[beat]}</span>
+                    {t.interruption && (
+                      <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--accent)]/15 text-[var(--accent)]">
+                        cuts in
+                      </span>
+                    )}
                   </span>
                   <span className="opacity-50">{t.id}</span>
                 </div>

@@ -37,7 +37,7 @@ const TOOLS: Anthropic.Tool[] = [
   {
     name: "insert_turn",
     description:
-      "Insert a new turn after the given turnId. Use to add a beat the user wants.",
+      "Insert a new turn after the given turnId. Use to add a beat the user wants. Include audio tags and set interruption:true for backchannels or cut-ins.",
     input_schema: {
       type: "object",
       properties: {
@@ -48,6 +48,7 @@ const TOOLS: Anthropic.Tool[] = [
           enum: ["cold-open", "tension", "pivot", "reveal", "hand-off"],
         },
         text: { type: "string" },
+        interruption: { type: "boolean" },
       },
       required: ["afterTurnId", "speaker", "beat", "text"],
     },
@@ -79,6 +80,7 @@ const TOOLS: Anthropic.Tool[] = [
                 enum: ["cold-open", "tension", "pivot", "reveal", "hand-off"],
               },
               text: { type: "string" },
+              interruption: { type: "boolean" },
             },
             required: ["speaker", "beat", "text"],
           },
@@ -106,6 +108,7 @@ function applyTools(
         continue;
       }
       next[idx] = { ...next[idx], text: newText };
+      // fall through
       results.push(`replace_turn: ${id} updated (${newText.length} chars)`);
     } else if (call.name === "insert_turn") {
       const after = String(call.input.afterTurnId);
@@ -119,6 +122,7 @@ function applyTools(
         speaker: call.input.speaker as ScriptTurn["speaker"],
         beat: call.input.beat as ScriptTurn["beat"],
         text: String(call.input.text),
+        interruption: Boolean(call.input.interruption),
       };
       next = [...next.slice(0, idx + 1), newTurn, ...next.slice(idx + 1)];
       results.push(`insert_turn: added after ${after} as ${newTurn.id}`);
@@ -133,7 +137,11 @@ function applyTools(
       );
     } else if (call.name === "replace_all") {
       const turns = call.input.turns as Array<Omit<ScriptTurn, "id">>;
-      next = turns.map((t, i) => ({ ...t, id: `r${Date.now().toString(36)}${i}` }));
+      next = turns.map((t, i) => ({
+        ...t,
+        interruption: Boolean(t.interruption),
+        id: `r${Date.now().toString(36)}${i}`,
+      }));
       results.push(`replace_all: rewrote with ${next.length} turns`);
     }
   }

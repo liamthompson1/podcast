@@ -26,17 +26,42 @@ export const STRUCTURE = `Each episode follows this five-beat arc, in order. Lab
 4. reveal — The thing the listener didn't expect to hear. Specific, concrete, sometimes uncomfortable.
 5. hand-off — The guest tells the listener what to actually do this week. One specific action. Ada closes warmly.
 
-Length target: 2,000–2,500 words across all turns combined (~18 minutes spoken). Most turns are 40–180 words. Avoid monologues over 220 words. Aim for 30–60 turns total.`;
+Length target: 2,000–2,500 words across all turns combined (~18 minutes spoken). Most substantive turns are 40–180 words. Avoid monologues over 220 words. Backchannel turns (see below) are 1–3 words. Aim for 40–70 turns total once backchannels and interruptions are added.`;
 
-export const STYLE_RULES = `Style rules:
-- Both voices are AI and that frame is honest, not hidden. Don't pretend to be human or claim human experiences ("when I was a kid", "my mother used to say").
-- The guest does not moralize, does not soften, but always finds the door of agency before the close.
-- No filler ("um", "like", "you know"). Conversational, not breezy.
-- Avoid em-dashes — use commas, full stops, or two short sentences instead.
-- Specific over abstract. "The 47-year-old radiologist" not "knowledge workers".
-- Numbers are fine but never invent statistics. If a stat would help and you don't have one, the speaker can say so out loud.
-- The guest never makes specific predictions about real, named individuals or companies.
-- Each turn must be one speaker only. No interruptions written into one turn.`;
+export const STYLE_RULES = `STYLE — both voices are AI, and the show is honest about that. Don't pretend to be human ("when I was a kid", "my mother used to say"). The guest doesn't moralize, doesn't soften, but always finds the door of agency before the close. Specific over abstract — "the 47-year-old radiologist", not "knowledge workers". Never invent statistics; if a number would help and you don't have one, have the speaker say so. The guest never makes predictions about named individuals or companies.
+
+AUDIO TAGS — this script will be voiced by ElevenLabs v3, which supports inline emotion tags. Use them deliberately, sparingly (1–2 per substantive turn, only where a real person would actually do that thing). Place the tag BEFORE the words it colours.
+
+Available tags:
+  [pause]   [short pause]   [long pause]
+  [laughs]  [chuckles]  [sighs]  [exhales]  [breathes in]
+  [softly]  [firmly]  [warmly]  [gently]  [hesitant]
+  [curious]  [skeptical]  [concerned]  [serious]
+  [whispers]  [clears throat]
+
+Examples:
+  "[exhales] Okay. So the honest answer is —"
+  "[curious] What do you mean by that?"
+  "Right. [pause] But here's the thing."
+  "[chuckles] Yeah. I know how that sounds."
+
+INTERRUPTIONS — real podcasts don't take clean turns. Mark interruptions two ways:
+1. The interrupted turn ENDS with an em-dash and an unfinished thought ("the way I see it is —").
+2. The turn that cuts in has "interruption": true. It starts mid-thought ("Wait, sorry — say more about...").
+
+Em-dashes are RESERVED for interruption cutoffs only. Don't use them as decorative punctuation elsewhere — use commas or full stops instead.
+
+Use 2–4 real interruptions across the episode. Don't overdo it.
+
+BACKCHANNELS — during longer guest monologues, add 2–5 very short Ada turns of pure acknowledgement: "Mm.", "Right.", "Yeah.", "Hm.", "Mm-hm." These are 1–3 words. Mark them "interruption": true so they cut tight. Use them when Cass is making a heavy point — they signal Ada is listening and break the wall of monologue.
+
+DISFLUENCIES — real speech has small repairs. Two or three per episode, max:
+  "I — well, what I mean is..."
+  "It's, you know, the kind of thing that..."
+  "Yeah, no, exactly."
+Overuse and it sounds fake. Restraint beats density.
+
+ONE SPEAKER PER TURN. Never write both voices in the same turn.`;
 
 export function showSystemPrompt(): string {
   return [

@@ -119,12 +119,19 @@ export async function POST(req: NextRequest) {
     // Run metadata generation in parallel with TTS — both take time.
     const metadataPromise = generateMetadata(body.script, body.idea);
 
-    // TTS for every turn, with a small breath at the start for natural pacing
-    // (except the very first turn).
-    const ttsItems = body.script.map((turn, i) => ({
-      voiceId: turn.speaker === "Ada" ? host.voiceId : body.guestVoiceId,
-      text: i === 0 ? turn.text : withLeadingBreak(turn.text, 350),
-    }));
+    // TTS for every turn. Pacing rules:
+    //   - First turn: no leading break.
+    //   - Interruption / backchannel: tight cut, no break (sounds like cutting in).
+    //   - Same-speaker continuation: short 200ms beat.
+    //   - Speaker change (normal turn-take): 350ms breath.
+    const ttsItems = body.script.map((turn, i) => {
+      const voiceId = turn.speaker === "Ada" ? host.voiceId : body.guestVoiceId;
+      let breakMs: number;
+      if (i === 0 || turn.interruption) breakMs = 0;
+      else if (body.script[i - 1].speaker === turn.speaker) breakMs = 200;
+      else breakMs = 350;
+      return { voiceId, text: withLeadingBreak(turn.text, breakMs) };
+    });
     const turnBuffersPromise = ttsParallel(ttsItems, 6);
 
     const [intro, outro] = await Promise.all([
