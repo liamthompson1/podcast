@@ -22,9 +22,7 @@ export interface TtsOpts {
   voiceId: string;
   text: string;
   modelId?: string;
-  // v3-style stability presets: "creative" | "natural" | "robust"
-  // Numbers also accepted for v2 models.
-  stability?: number | "creative" | "natural" | "robust";
+  stability?: number;
   similarityBoost?: number;
   style?: number;
   speed?: number;
@@ -37,15 +35,13 @@ export async function tts(opts: TtsOpts): Promise<Buffer> {
     voiceId,
     text,
     useV3 = true,
+    stability = 0.45,
     similarityBoost = 0.75,
     style = 0.4,
     speed = 1.0,
   } = opts;
 
   const modelId = opts.modelId || (useV3 ? "eleven_v3" : "eleven_turbo_v2_5");
-  // v3 wants "natural" by default for podcast feel; turbo wants 0.5 numeric.
-  const stability =
-    opts.stability ?? (useV3 ? ("natural" as const) : 0.5);
 
   const res = await fetch(`${API}/text-to-speech/${voiceId}`, {
     method: "POST",
