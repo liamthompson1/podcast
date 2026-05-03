@@ -53,7 +53,11 @@ Em-dashes are RESERVED for interruption cutoffs only. Don't use them as decorati
 
 Use 2–4 real interruptions across the episode. Don't overdo it.
 
-BACKCHANNELS — during longer guest monologues, add 2–5 very short Ada turns of pure acknowledgement: "Mm.", "Right.", "Yeah.", "Hm.", "Mm-hm." These are 1–3 words. Mark them "interruption": true so they cut tight. Use them when Cass is making a heavy point — they signal Ada is listening and break the wall of monologue.
+BACKCHANNELS — during longer guest monologues, add 2–5 very short Ada turns of pure acknowledgement: "Mm.", "Right.", "Yeah.", "Hm.", "Mm-hm." These are 1–3 words.
+
+CRITICAL: every backchannel turn MUST have "interruption": true. Without it the audio inserts a 350ms silence and the backchannel sounds delayed and fake. Same for any turn that cuts in mid-thought.
+
+Use backchannels when the guest is making a heavy point — they signal Ada is listening and break the wall of monologue.
 
 DISFLUENCIES — real speech has small repairs. Two or three per episode, max:
   "I — well, what I mean is..."
@@ -94,20 +98,18 @@ export function scriptGenUserPrompt({
   guestPersona,
 }: ScriptGenInput): string {
   return [
-    `Write the full episode script. Output JSON only, no prose.`,
+    `Write the full episode script. Call submit_script exactly once.`,
     "",
     `Episode idea: ${idea}`,
     "",
     `Guest name: ${guestName}`,
     `Guest persona: ${guestPersona}`,
     "",
-    `Output schema:`,
-    `{`,
-    `  "workingTitle": "string — punchy, ideally a question, max 60 chars",`,
-    `  "turns": [`,
-    `    { "speaker": "Ada" | "Guest", "beat": "cold-open" | "tension" | "pivot" | "reveal" | "hand-off", "text": "string" }`,
-    `  ]`,
-    `}`,
+    `Hard requirements — the script will sound robotic if you skip these:`,
+    `1. At least 6 short Ada backchannel turns ("Mm.", "Right.", "Yeah.", "Hm.") with interruption:true. Spread them through the longer guest monologues, never two in a row.`,
+    `2. At least 2 real interruptions where one speaker cuts the other off — the interrupted turn ends with em-dash + unfinished thought, the cutting-in turn has interruption:true.`,
+    `3. At least 8 inline audio tags ([pause], [exhales], [softly], [curious], [chuckles], etc.), placed BEFORE the words they colour, spread across both speakers.`,
+    `4. 2–3 small disfluencies for realism ("I — well,", "you know,", "yeah, no,").`,
   ].join("\n");
 }
 
