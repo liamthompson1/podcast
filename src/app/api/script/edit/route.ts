@@ -4,7 +4,7 @@ import { showSystemPrompt } from "@/lib/prompts";
 import type { ScriptTurn } from "@/lib/types";
 
 export const runtime = "nodejs";
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 interface EditChatMessage {
   role: "user" | "assistant";

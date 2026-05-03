@@ -9,7 +9,7 @@ import {
 import type { ScriptTurn } from "@/lib/types";
 
 export const runtime = "nodejs";
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 const SCRIPT_TOOL: Anthropic.Tool = {
   name: "submit_script",
