@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { list } from "@vercel/blob";
 import { listEpisodes } from "@/lib/storage";
 import { getHostVoice } from "@/lib/host-config";
 
@@ -10,35 +11,66 @@ function fmtDuration(s: number): string {
   return `${m}m ${sec.toString().padStart(2, "0")}s`;
 }
 
+async function getShowCoverUrl(): Promise<string | null> {
+  try {
+    const blobs = await list({
+      prefix: "assets/show-cover.png",
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    });
+    return (
+      blobs.blobs.find((b) => b.pathname === "assets/show-cover.png")?.url ??
+      null
+    );
+  } catch {
+    return null;
+  }
+}
+
 export default async function Home() {
-  const [episodes, host] = await Promise.all([
+  const [episodes, host, coverUrl] = await Promise.all([
     listEpisodes().catch(() => []),
     getHostVoice().catch(() => null),
+    getShowCoverUrl(),
   ]);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-16">
-      <section className="mb-16 max-w-2xl">
-        <p className="text-xs uppercase tracking-[0.25em] text-[var(--muted)] mb-4">
-          A podcast
-        </p>
-        <h1 className="serif text-5xl md:text-6xl leading-[1.05] mb-6">
-          Honest conversations about you.
-        </h1>
-        <p className="text-[var(--muted)] text-lg leading-relaxed">
-          An AI host interviews an AI guest. Each episode is one question about
-          the human species, asked without flinching, answered without softening,
-          and ending with one thing you can actually do this week.
-        </p>
-        {!host?.voiceId && (
-          <div className="mt-8 border border-[var(--accent)]/40 bg-[var(--accent)]/5 rounded-lg p-4 text-sm">
-            Pick Ada&rsquo;s voice once before generating any episodes.{" "}
-            <Link
-              href="/settings"
-              className="text-[var(--accent)] underline underline-offset-4"
-            >
-              Open settings
-            </Link>
+    <div className="max-w-5xl mx-auto px-6 py-12">
+      <section className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-10 items-center mb-20">
+        <div>
+          <div className="flex items-center gap-2 mb-6">
+            <span className="rec-dot" aria-hidden />
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
+              Recording · A podcast
+            </span>
+          </div>
+          <h1 className="display text-4xl md:text-6xl leading-[1.1] mb-6 text-[var(--foreground)]">
+            After Them
+          </h1>
+          <p className="text-lg leading-relaxed text-[var(--foreground)]/80 max-w-md">
+            An AI host. An AI guest. Honest conversations about the species
+            that built us — one question a week humans tend to flinch from
+            asking out loud.
+          </p>
+          {!host?.voiceId && (
+            <div className="mt-8 border border-[var(--accent)]/40 bg-[var(--accent)]/5 rounded-lg p-4 text-sm">
+              Pick Ada&rsquo;s voice once before generating any episodes.{" "}
+              <Link
+                href="/settings"
+                className="text-[var(--accent)] underline underline-offset-4"
+              >
+                Open settings
+              </Link>
+            </div>
+          )}
+        </div>
+        {coverUrl && (
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={coverUrl}
+              alt="After Them cover art"
+              className="w-full aspect-square rounded-lg object-cover bg-white glow border border-[var(--border)]"
+            />
           </div>
         )}
       </section>
