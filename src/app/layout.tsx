@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Cormorant_Garamond } from "next/font/google";
 import Link from "next/link";
+import { isAdmin } from "@/lib/auth";
+import { LogoutButton } from "./logout-button";
 import "./globals.css";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -17,9 +19,10 @@ export const metadata: Metadata = {
     "Honest conversations about you. Both voices on this show are AI.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const admin = await isAdmin();
   return (
     <html
       lang="en"
@@ -34,22 +37,30 @@ export default function RootLayout({
                 After Them
               </span>
               <span className="text-[10px] uppercase tracking-[0.25em] text-[var(--muted)] hidden sm:inline">
-                Studio
+                {admin ? "Studio · admin" : ""}
               </span>
             </Link>
             <nav className="flex items-center gap-5 text-sm text-[var(--muted)]">
               <Link href="/" className="hover:text-[var(--foreground)]">
                 Episodes
               </Link>
-              <Link href="/settings" className="hover:text-[var(--foreground)]">
-                Settings
-              </Link>
-              <Link
-                href="/new"
-                className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1.5 rounded-full text-sm font-medium hover:opacity-90"
-              >
-                New episode
-              </Link>
+              {admin && (
+                <>
+                  <Link
+                    href="/settings"
+                    className="hover:text-[var(--foreground)]"
+                  >
+                    Settings
+                  </Link>
+                  <Link
+                    href="/new"
+                    className="bg-[var(--foreground)] text-[var(--background)] px-3 py-1.5 rounded-full text-sm font-medium hover:opacity-90"
+                  >
+                    New episode
+                  </Link>
+                  <LogoutButton />
+                </>
+              )}
             </nav>
           </div>
         </header>

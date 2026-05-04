@@ -1,6 +1,7 @@
 import { getManifest } from "@/lib/storage";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { isAdmin } from "@/lib/auth";
 import { EpisodePlayer } from "./episode-player";
 import { ScriptView } from "./script-view";
 
@@ -18,7 +19,7 @@ export default async function EpisodePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const ep = await getManifest(id);
+  const [ep, admin] = await Promise.all([getManifest(id), isAdmin()]);
   if (!ep) notFound();
 
   return (
@@ -30,12 +31,14 @@ export default async function EpisodePage({
         >
           ← All episodes
         </Link>
-        <Link
-          href={`/episodes/${ep.id}/edit`}
-          className="text-xs text-[var(--muted)] hover:text-[var(--accent)]"
-        >
-          Edit episode →
-        </Link>
+        {admin && (
+          <Link
+            href={`/episodes/${ep.id}/edit`}
+            className="text-xs text-[var(--muted)] hover:text-[var(--accent)]"
+          >
+            Edit episode →
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-10 mt-6 mb-12">

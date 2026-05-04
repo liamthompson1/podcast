@@ -2,6 +2,7 @@ import Link from "next/link";
 import { list } from "@vercel/blob";
 import { listEpisodes } from "@/lib/storage";
 import { getHostVoice } from "@/lib/host-config";
+import { isAdmin } from "@/lib/auth";
 import { RegenerateCoverButton } from "./regenerate-cover-button";
 import { DeleteEpisodeButton } from "./delete-episode-button";
 
@@ -29,10 +30,11 @@ async function getShowCoverUrl(): Promise<string | null> {
 }
 
 export default async function Home() {
-  const [episodes, host, coverUrl] = await Promise.all([
+  const [episodes, host, coverUrl, admin] = await Promise.all([
     listEpisodes().catch(() => []),
     getHostVoice().catch(() => null),
     getShowCoverUrl(),
+    isAdmin(),
   ]);
 
   return (
@@ -53,7 +55,7 @@ export default async function Home() {
             that built us — one question a week humans tend to flinch from
             asking out loud.
           </p>
-          {!host?.voiceId && (
+          {admin && !host?.voiceId && (
             <div className="mt-8 border border-[var(--accent)]/40 bg-[var(--accent)]/5 rounded-lg p-4 text-sm">
               Pick Ada&rsquo;s voice once before generating any episodes.{" "}
               <Link
@@ -82,25 +84,34 @@ export default async function Home() {
           <h2 className="text-xs uppercase tracking-[0.25em] text-[var(--muted)]">
             Episodes
           </h2>
-          <Link
-            href="/new"
-            className="text-sm text-[var(--accent)] hover:underline underline-offset-4"
-          >
-            + new episode
-          </Link>
+          {admin && (
+            <Link
+              href="/new"
+              className="text-sm text-[var(--accent)] hover:underline underline-offset-4"
+            >
+              + new episode
+            </Link>
+          )}
         </div>
 
         {episodes.length === 0 ? (
           <div className="border border-[var(--border)] bg-white rounded-lg p-10 text-center text-[var(--muted)]">
-            No episodes yet. Start with a question that scares you slightly.
-            <div className="mt-4">
-              <Link
-                href="/new"
-                className="inline-block bg-[var(--foreground)] text-[var(--background)] px-4 py-2 rounded-full text-sm font-medium hover:opacity-90"
-              >
-                Write episode 1
-              </Link>
-            </div>
+            {admin ? (
+              <>
+                No episodes yet. Start with a question that scares you
+                slightly.
+                <div className="mt-4">
+                  <Link
+                    href="/new"
+                    className="inline-block bg-[var(--foreground)] text-[var(--background)] px-4 py-2 rounded-full text-sm font-medium hover:opacity-90"
+                  >
+                    Write episode 1
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <>Episodes are on the way. Check back shortly.</>
+            )}
           </div>
         ) : (
           <ul className="space-y-3">
@@ -130,22 +141,24 @@ export default async function Home() {
                       {ep.description}
                     </p>
                   </Link>
-                  <div className="mt-3 flex items-center gap-3 text-xs">
-                    <Link
-                      href={`/episodes/${ep.id}/edit`}
-                      className="text-[var(--muted)] hover:text-[var(--foreground)]"
-                    >
-                      Edit
-                    </Link>
-                    <span className="text-[var(--border)]">·</span>
-                    <RegenerateCoverButton id={ep.id} />
-                    <span className="text-[var(--border)]">·</span>
-                    <DeleteEpisodeButton
-                      id={ep.id}
-                      title={ep.title}
-                      number={ep.number}
-                    />
-                  </div>
+                  {admin && (
+                    <div className="mt-3 flex items-center gap-3 text-xs">
+                      <Link
+                        href={`/episodes/${ep.id}/edit`}
+                        className="text-[var(--muted)] hover:text-[var(--foreground)]"
+                      >
+                        Edit
+                      </Link>
+                      <span className="text-[var(--border)]">·</span>
+                      <RegenerateCoverButton id={ep.id} />
+                      <span className="text-[var(--border)]">·</span>
+                      <DeleteEpisodeButton
+                        id={ep.id}
+                        title={ep.title}
+                        number={ep.number}
+                      />
+                    </div>
+                  )}
                 </div>
               </li>
             ))}
