@@ -1,39 +1,37 @@
 import { NextResponse, type NextRequest } from "next/server";
-import crypto from "crypto";
 
-// NOTE: middleware can't import from /lib/auth because that uses next/headers
-// (server-only). The token derivation has to be duplicated here in a way
-// that works on the edge runtime.
+// NOTE: middleware runs on the Edge runtime — no node:crypto. Use Web Crypto
+// (crypto.subtle) instead. The token derivation here must match
+// expectedToken() in /lib/auth.ts so cookies set by the login route validate
+// here.
 
 const COOKIE = "after-them-admin";
 
-function tokenFor(pw: string): string {
-  return crypto
-    .createHash("sha256")
-    .update(`after-them.v1:${pw}`)
-    .digest("hex");
+async function tokenFor(pw: string): Promise<string> {
+  const data = new TextEncoder().encode(`after-them.v1:${pw}`);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-function isAdmin(req: NextRequest): boolean {
-  const expected = tokenFor(process.env.ADMIN_PASSWORD || "humantime");
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let r = 0;
+  for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return r === 0;
+}
+
+async function isAdmin(req: NextRequest): Promise<boolean> {
   const got = req.cookies.get(COOKIE)?.value;
-  if (!got || got.length !== expected.length) return false;
-  // Edge runtime supports timingSafeEqual via the node crypto polyfill in
-  // Next.js. If it ever stops, swap for a manual constant-time compare.
-  return crypto.timingSafeEqual(
-    Buffer.from(got, "utf8"),
-    Buffer.from(expected, "utf8"),
-  );
+  if (!got) return false;
+  const expected = await tokenFor(process.env.ADMIN_PASSWORD || "humantime");
+  return safeEqual(got, expected);
 }
 
-// Page paths that require admin. Edit page lives under /episodes/[id]/edit
-// so we match that suffix specifically.
 const ADMIN_PAGE_PATHS = ["/new", "/settings"];
 const ADMIN_PAGE_SUFFIX = "/edit";
 
-// API mutation routes that require admin. Anything not in this list is
-// public — keep the read-only routes (GET episodes, GET show cover, GET
-// transcript, GET host voice) accessible to listeners.
 const ADMIN_API_RULES: Array<{ method: string; pattern: RegExp }> = [
   { method: "POST", pattern: /^\/api\/episode\/publish$/ },
   { method: "POST", pattern: /^\/api\/episodes\/[^/]+\/regenerate-cover$/ },
@@ -59,15 +57,13 @@ function needsAdmin(req: NextRequest): boolean {
   return false;
 }
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   if (!needsAdmin(req)) return NextResponse.next();
-  if (isAdmin(req)) return NextResponse.next();
+  if (await isAdmin(req)) return NextResponse.next();
 
   if (req.nextUrl.pathname.startsWith("/api/")) {
     return NextResponse.json({ error: "admin only" }, { status: 401 });
   }
-  // For pages, bounce to /admin with a return path so login lands the user
-  // back where they were heading.
   const url = req.nextUrl.clone();
   url.pathname = "/admin";
   url.search = `?next=${encodeURIComponent(
@@ -77,7 +73,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Match everything except Next.js internals + static assets — narrowing
-  // here saves a function invocation per static request.
   matcher: ["/((?!_next/static|_next/image|favicon|icon|apple-icon|.*\\..*).*)"],
 };
